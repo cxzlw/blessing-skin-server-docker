@@ -3,19 +3,17 @@ FROM ubuntu:22.04
 LABEL Maintainer="build docker images by @feilongproject"
 LABEL Description="blessing-skin-server container with Nginx 1.18.0 & PHP 8.1.2 based on Ubuntu 22.04"
 
-RUN apt-get update && \
-  apt-get upgrade -y
-
-RUN apt-get install supervisor systemctl curl lsof vim git zip wget nginx php8.1 redis php8.1-redis php8.1-mysql php8.1-sqlite php8.1-fpm php8.1-gd php8.1-mbstring php8.1-xml php8.1-zip php8.1-pgsql -y
+# 尽早安装依赖，以便利用 Docker 缓存
+RUN apt-get update -y && apt-get install supervisor systemctl curl lsof vim git zip wget nginx php8.1 redis php8.1-redis php8.1-mysql php8.1-sqlite php8.1-fpm php8.1-gd php8.1-mbstring php8.1-xml php8.1-zip php8.1-pgsql -y
 
 WORKDIR /var/www/blessing-skin/
-
-ENV TZ=Asia/Shanghai
 
 COPY ./src /var/www/blessing-skin
 COPY ./config/sources.list /etc/apt/sources.list
 COPY ./config/50x.html /var/www/html/50x.html
 
+# 设置时区
+ENV TZ=Asia/Shanghai
 RUN echo "${TZ}" > /etc/timezone && \
   ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime
 
