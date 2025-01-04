@@ -19,8 +19,7 @@ RUN php -v
 COPY ./src /var/www/blessing-skin
 
 # 处理 .env
-RUN mkdir storage && \
-  mv .env.example storage/.env && \
+RUN mv .env.example storage/.env && \
   ln -s storage/.env .env
 
 RUN chown -R www-data:www-data /var/www/blessing-skin && \
