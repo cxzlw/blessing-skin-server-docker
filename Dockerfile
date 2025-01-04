@@ -14,19 +14,27 @@ RUN apt-get update -y && apt-get install supervisor systemctl curl lsof vim git 
 
 WORKDIR /var/www/blessing-skin/
 
-COPY ./src /var/www/blessing-skin
-COPY ./config/50x.html /var/www/html/50x.html
-COPY ./.env /var/www/blessing-skin/.env
+RUN php -v
 
-RUN php -v && \
-  chown -R www-data:www-data /var/www/blessing-skin && \
-  ls -alh /var/www/ /var/www/blessing-skin && \
-  php artisan key:generate
+COPY ./src /var/www/blessing-skin
+
+# 处理 .env
+RUN mkdir storage && \
+  mv .env.example storage/.env && \
+  ln -s storage/.env .env
+
+RUN chown -R www-data:www-data /var/www/blessing-skin && \
+  ls -alh /var/www/ /var/www/blessing-skin
+
+RUN php artisan key:generate
 
 COPY ./config/nginx.conf /etc/nginx/nginx.conf
-COPY config/fpm-pool.conf /etc/php/8.1/fpm/php-fpm.conf
-COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY ./config/50x.html /var/www/html/50x.html
+COPY ./config/fpm-pool.conf /etc/php/8.1/fpm/php-fpm.conf
+COPY ./config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 EXPOSE 80
+
+VOLUME [ "/var/www/blessing-skin/storage" ]
 
 CMD ["/usr/bin/python3.10","/usr/bin/supervisord","-c","/etc/supervisor/conf.d/supervisord.conf"]
