@@ -26,6 +26,10 @@ RUN mkdir -p storage && \
   mv .env.example storage/.env && \
   ln -s storage/.env .env
 
+# 设置插件目录
+RUN mkdir storage/plugins && \
+  sed 's/PLUGINS_DIR=null/PLUGINS_DIR=\/var\/www\/blessing-skin\/storage\/plugins/' -i storage/.env
+
 RUN chown -R www-data:www-data /var/www/blessing-skin && \
   ls -alh /var/www/ /var/www/blessing-skin
 
