@@ -16,6 +16,7 @@ WORKDIR /var/www/blessing-skin/
 
 COPY ./src /var/www/blessing-skin
 COPY ./config/50x.html /var/www/html/50x.html
+COPY ./.env /var/www/blessing-skin/.env
 
 RUN php -v && \
   chown -R www-data:www-data /var/www/blessing-skin && \
