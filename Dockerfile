@@ -14,7 +14,10 @@ RUN apt-get update -y && apt-get install supervisor systemctl curl lsof vim git 
 
 WORKDIR /var/www/blessing-skin/
 
-RUN php -v
+COPY ./config/nginx.conf /etc/nginx/nginx.conf
+COPY ./config/50x.html /var/www/html/50x.html
+COPY ./config/fpm-pool.conf /etc/php/8.1/fpm/php-fpm.conf
+COPY ./config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 COPY ./src /var/www/blessing-skin
 
@@ -25,12 +28,8 @@ RUN mv .env.example storage/.env && \
 RUN chown -R www-data:www-data /var/www/blessing-skin && \
   ls -alh /var/www/ /var/www/blessing-skin
 
+RUN php -v
 RUN php artisan key:generate
-
-COPY ./config/nginx.conf /etc/nginx/nginx.conf
-COPY ./config/50x.html /var/www/html/50x.html
-COPY ./config/fpm-pool.conf /etc/php/8.1/fpm/php-fpm.conf
-COPY ./config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 EXPOSE 80
 
