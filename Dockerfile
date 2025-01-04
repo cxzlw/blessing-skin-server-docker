@@ -22,8 +22,8 @@ COPY ./config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY ./src /var/www/blessing-skin
 
 # 处理 .env
-RUN mv .env.example storage/.env && \
-  ln -s storage/.env .env
+RUN mv /var/www/blessing-skin/.env.example /var/www/blessing-skin/storage/.env && \
+  ln -s /var/www/blessing-skin/storage/.env /var/www/blessing-skin/.env
 
 RUN chown -R www-data:www-data /var/www/blessing-skin && \
   ls -alh /var/www/ /var/www/blessing-skin
